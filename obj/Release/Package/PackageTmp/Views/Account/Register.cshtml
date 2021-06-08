@@ -1,0 +1,47 @@
+﻿@model Tider.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<div class="my-container">
+    @using (Html.BeginForm("Register", "Account",
+                            FormMethod.Post,
+                            new { style = "margin-top: 30vh;", @class = "form-horizontal text-center", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+    <fieldset>
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.NickName, new { @class = "form-control align-middle-horizontal my3p10", placeholder = "Nick name" })
+            <div class="invalid-feedback align-middle-horizontal my3p10">{li here}</div>
+        </div>
+
+        <div class="form-group has-danger">
+            @*Reminder: is-invalid class*@
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control align-middle-horizontal my3p10 text-danger ", placeholder = "Email" })
+            <div class="invalid-feedback align-middle-horizontal my3p10">Sorry, that email's already taken.</div>
+        </div>
+
+        <div class="form-group has-danger">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control align-middle-horizontal my3p10", placeholder = "Password" })
+            <div class="invalid-feedback align-middle-horizontal my3p10">{li here}</div>
+        </div>
+
+        <div class="form-group">
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control align-middle-horizontal my3p10", placeholder = "Retype password" })
+            <div class="invalid-feedback align-middle-horizontal my3p10">{li here}</div>
+        </div>
+
+        <div class="form-group flex">
+            <button type="submit" class="btn btn-primary my3p10">Submit</button>
+        </div>
+    </fieldset>
+    }
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

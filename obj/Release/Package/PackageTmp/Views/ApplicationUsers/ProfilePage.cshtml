@@ -1,0 +1,261 @@
+﻿@model Tider.Models.ProfilePageViewModel
+
+@{
+    ViewBag.Title = Model.User.NickName +  " - Profile";
+}
+
+@section styles {
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+}
+
+<div class="main-content">
+    <!-- Page content -->
+    <div style="margin-top: 75px;" class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
+                <div class="card card-profile shadow bg-dark">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-3 order-lg-2">
+                            <div class="card-profile-image">
+                                <a href="#">
+                                    <img src="@Model.User.Image_url" class="rounded-circle">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4 bg-dark">
+                        <div class="d-flex justify-content-between">
+                            <a href="#" class="btn btn-sm btn-info mr-4">Follow</a>
+                            <a href="#" class="btn btn-sm btn-info float-right">Message</a>
+                        </div>
+                    </div>
+                    <div class="card-body pt-0 pt-md-4" style="background-color: #17355B;">
+                        <div class="row">
+                            <div class="col">
+                                <div class="card-profile-stats d-flex justify-content-center mt-md-5">
+                                    <div>
+                                        <span class="heading">22</span>
+                                        <span class="description">Followers</span>
+                                    </div>
+                                    <div>
+                                        <span class="heading">@Model.PostsCount</span>
+                                        <span class="description">Posts</span>
+                                    </div>
+                                    <div>
+                                        <span class="heading">89</span>
+                                        <span class="description">Comments</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <h3>
+                                @if (Model.User.Roles.Count == 3) {
+                                    <span class="badge badge-danger text-white">Admin</span>
+                                } else if (Model.User.Roles.Count == 2) {
+                                    <span class="badge badge-warning text-white">Moderator</span>
+                                }
+                                @Model.User.RealName<span class="font-weight-light">, 20</span>
+                            </h3>
+                            <div id="profile-description">
+                                Description
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-8 order-xl-1">
+                <div class="card bg-dark shadow">
+                    <div class="card-header bg-dark border-0">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <h3 class="mb-0 text-white">My account</h3>
+                            </div>
+                            <div class="col-4 text-right">
+                                @if (Model.User.Id == ViewBag.UserId) {
+                                    <span data-category-id=@Model.User.Id data-toggle="modal" data-target="#editProfile" class="btn btn-sm btn-primary" style="cursor:pointer;">Edit profile</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body bg-dark">
+                        <form>
+                            <div class="pl-lg-4">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group focused">
+                                            <label class="form-control-label text-white" for="input-username">Nickname</label>
+                                            <input type="text" class="form-control form-control-alternative text-black" placeholder="Not Set" value="@Model.User.NickName" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label text-white" for="input-email">Email address</label>
+                                            <input type="email" class="form-control form-control-alternative text-black" value="@Model.User.Email" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <p class="ml-4 mb-4 lg text-white">My posts</p>
+                            <div class="pl-lg-4">
+                                <!-- Posts -->
+                                @{
+                                    if (Model.Posts.Count() != 0) {
+                                        foreach (var item in Model.Posts) {
+                                            @Html.Partial("Partials/_Post", item)
+                                        }
+                                    } else {
+                                        <div class="main-content">
+                                            <div class="container mt-3">
+                                                <div class="row mt-3">
+                                                    <div class="col">
+                                                        <div class="card bg-dark shadow">
+                                                            <div>
+                                                                <div class="about-container text-center">
+                                                                    <p class="mt-3">This user haven't posted anything yey.</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editProfile" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title text-white">Edit post...</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-white">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="add-category-main text-white">
+                    <form method="post" action="/ApplicationUsers/Edit/@Model.User.Id" >
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group">
+                            <input class="transparent-form" name="NickName" placeholder="Nick name" />
+                        </div>
+
+                        <div class="form-group">
+                            <input class="transparent-form" name="RealName" placeholder="Real name" />
+                        </div>
+
+                        <div class="form-group">
+                            <input style="width: 97%;" class="transparent-form" name="Image_url" placeholder="Image URL" />
+                        </div>
+
+                        <button type="button" class="btn bg-dark" data-dismiss="modal">Close</button>
+                        <button style="" class="btn bg-dark" type="submit">Edit profile</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="confirmPostDeletion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title text-white">Are you sure you want to delete this post?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-white">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body text-white">
+                Warning! All associated comments will be removed.
+            </div>
+
+            <div class="modal-footer text-white">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                <form method="post" action="replace">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">Confirm</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editPost" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title text-white">Edit post...</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-white">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="add-category-main text-white">
+                    <form method="post" action="this_should_be_replaced">
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <input id="post-content-input" style="width: 97%;" class="transparent-form" name="Content" placeholder="Content" />
+                        </div>
+
+                        <div class="form-group">
+                            <input id="post-image-input" style="width: 97%;" class="transparent-form" name="Image_url" placeholder="Image URL" />
+                        </div>
+
+                        <button type="button" class="btn bg-dark" data-dismiss="modal">Close</button>
+                        <button style="" class="btn bg-dark" type="submit">Edit post</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script>
+        // Deal with opening the deletion modal of each post
+        $('#confirmPostDeletion').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)             // Button that triggered the modal
+            var categoryId = button.data('category-id')     // Extract info from data-* attributes
+
+
+            $('#confirmPostDeletion form').get(0).setAttribute('action', '/Posts/Delete/' + categoryId);
+        })
+
+        // Deal with opening the edit modal of each post
+        $('#editPost').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)             // Button that triggered the modal
+            var postId = button.data('post-id')             // Extract info from data-* attributes
+            var content = button.data('content')
+            var imageUrl = button.data('image')
+
+
+            $('#editPost .modal-title').html('Edit post with id ' + postId)
+            $('#editPost form').get(0).setAttribute('action', '/Posts/Edit/' + postId);
+
+            $('#post-content-input').get(0).setAttribute('value', content)
+            $('#post-image-input').get(0).setAttribute('value', imageUrl)
+        })
+    </script>
+}

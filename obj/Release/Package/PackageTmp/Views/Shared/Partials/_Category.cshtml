@@ -1,0 +1,43 @@
+﻿@model Tider.Models.Category
+
+<a style="cursor: pointer;" class="no-decoration" href="/Posts/?categoryId=@Model.ID">
+    <div class="category">
+        <img id="category-image" src="@Model.Image_url" />
+
+        <div class="category-main">
+            <div class="category-header">
+                <h2>@Model.Title</h2>
+            </div>
+
+            <div class="category-content">
+                @Model.Description
+            </div>
+
+            <div class="category-footer">
+                @if (ViewBag.isAdmin) {
+                    <div>
+                        <span class="badge badge-dark"><img src="~/Content/src/clock.svg" />@Model.Date</span>
+                        <span class="badge badge-dark"><img src="~/Content/src/person.svg" />@Model.Op.UserName</span>
+                        <span class="badge badge-success">2 subscribers</span>
+                        <span class="badge badge-success">1.2k views / 24h</span>
+                    </div>
+
+                    <div>
+                        @Html.ActionLink("Subscribe!", "Subscribe", new { id = Model.ID }, new { @class = "badge badge-info" })
+                        <span data-category-id="@Model.ID" data-title="@Model.Title" data-description="@Model.Description" data-image="@Model.Image_url" data-toggle="modal" data-target="#editCategory" class="badge badge-warning" style="cursor:pointer;">Edit</span>
+                        <span data-category-id=@Model.ID data-toggle="modal" data-target="#confirmCategoryDeletion" class="badge badge-danger" style="cursor:pointer;">Delete</span>
+                    </div>
+                } else {
+                    <div>
+                        <span class="badge badge-success">2 subscribers</span>
+                        <span class="badge badge-success">1.2k views / 24h</span>
+                    </div>
+
+                    <div>
+                        @Html.ActionLink("Subscribe!", "Subscribe", new { id = Model.ID }, new { @class = "badge badge-info" })
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</a>

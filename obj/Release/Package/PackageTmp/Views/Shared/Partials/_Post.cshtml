@@ -1,0 +1,56 @@
+﻿@model Tider.Models.Post
+
+
+<div class="post">
+    <div class="post-main-left">
+        <a href="/ApplicationUsers/ProfilePage/@Model.Op.Id"><img src="@Model.Op.Image_url" /></a>
+    </div>
+
+    
+    <div class="post-main-right">
+        <a style="cursor: pointer;" class="no-decoration" href="/Comments/?postId=@Model.ID">
+
+            <div class="post-header">
+                <div>
+                    <p>@Model.Op.NickName</p>
+                </div>
+                <div style="display: flex;">
+                    <img src="~/Content/src/my_like_v3.png" />
+                    <p>12</p>
+                    <img src="~/Content/src/my_dislike_v3.png" />
+                </div>
+            </div>
+
+            <div class="post-content">
+                @{
+                    if (Model.Image_url != null) {
+                        <img src="@Model.Image_url" alt="post's image" />
+                    }
+                }
+                <p>
+                    @Html.DisplayFor(model => model.Content)
+                </p>
+            </div>
+        </a>
+
+        <div class="post-footer">
+            <div>
+                <span class="badge badge-dark"><img src="~/Content/src/comment.svg" />12 Comments</span>
+                <span class="badge badge-dark"><img src="~/Content/src/clock.svg" />@Model.Date</span>
+            </div>
+
+            <div>
+                @if (ViewBag.UserId == Model.OpId) {
+                    <span data-post-id=@Model.ID data-content="@Model.Content" data-image="@Model.Image_url" data-toggle="modal" data-target="#editPost" class="badge badge-warning" style="cursor:pointer;">Edit</span>
+
+                }
+
+                @if (ViewBag.IsAdmin || ViewBag.IsMod) {
+                    <span class="badge badge-warning" style="cursor:pointer;">Move</span>
+                    <span data-category-id=@Model.ID data-toggle="modal" data-target="#confirmPostDeletion" class="badge badge-danger" style="cursor:pointer;">Delete</span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

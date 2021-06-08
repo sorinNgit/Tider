@@ -1,0 +1,79 @@
+﻿@using Tider.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Log in";
+}
+
+
+<div class="my-container">
+    <section id="loginForm">
+        @using (Html.BeginForm("Login", "Account",
+                                new { ReturnUrl = ViewBag.ReturnUrl },
+                                FormMethod.Post,
+                                new { style = "margin-top: 30vh", @class = "form-horizontal text-center", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger align-middle-horizontal my3p10" })
+
+        <div class="form-group">
+            @if (Model.InvalidLogin) {
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control align-middle-horizontal my3p10", placeholder = Model.EmailPlaceholder, value = ViewBag.EmailValue })
+            } else {
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control align-middle-horizontal my3p10", placeholder = Model.EmailPlaceholder, value = ViewBag.EmailValue })
+            }
+            @Html.ValidationMessage("Mail", new { @class = "align-middle-horizontal" })
+
+            @Html.ValidationMessageFor(m => m.Email, "Invalid mail.", new { @class = "text-danger align-middle-horizontal my3p10" })
+        </div>
+
+
+        <div class="form-group">
+            @if (Model.InvalidLogin) {
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control align-middle-horizontal my3p10 is-invalid", placeholder = Model.PasswordPlaceholder })
+            } else {
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control align-middle-horizontal my3p10", placeholder = Model.PasswordPlaceholder })
+            }
+
+            @*@Html.ValidationMessageFor(m => m.Password, "Wrong password.", new { @class = "text-danger align-middle-horizontal my3p10" })*@
+
+        </div>
+
+            <div class="form-group">
+                <div class="checkbox">
+                    <div class="custom-control custom-checkbox">
+                        @Html.CheckBoxFor(m => m.RememberMe, htmlAttributes: new { type = "checkbox", @class = "custom-control-input checkbox-middle", id = "customCheck1", @checked = "" })
+                        @Html.LabelFor(m => m.RememberMe, htmlAttributes: new { @class = "custom-control-label", @for="customCheck1" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group flex">
+                <button type="submit" class="btn btn-primary my3p10">Login</button>
+            </div>
+
+
+            <div class="form-group flex">
+                @Html.ActionLink("Register here", "Register",
+                                 routeValues: null,
+                                 htmlAttributes: new { @class = "btn btn-primary my3p10", style="color: #fff;" })
+            </div>
+        }
+    </section>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+
+
+@* Enable this once you have account confirmation enabled for password reset functionality
+    <p>
+        @Html.ActionLink("Forgot your password?", "ForgotPassword")
+    </p>*@
+
+@*<section id="socialLoginForm">
+        @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+    </section>*@

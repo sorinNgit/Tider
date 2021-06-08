@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("styles", required: false)
+</head>
+
+
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <p>@ViewBag.Giberish</p>
+        @Html.ActionLink("Tider", "Index", "Home", routeValues: null, htmlAttributes: new { @class = "navbar-brand" })
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    @Html.ActionLink("Categories", "Index", "Categories", routeValues: null, htmlAttributes: new { @class = "nav-link" })
+                </li>
+                <li class="nav-item"> @* active *@
+                    @Html.ActionLink("Hot", "Index", "Posts", routeValues: null, htmlAttributes: new { @class = "nav-link" })
+                </li>
+                <li class="nav-item dropdown">
+                    @using Microsoft.AspNet.Identity
+                    @if (Request.IsAuthenticated) {
+                        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" })) {
+                            @Html.AntiForgeryToken()
+
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @*TODO: Replace with NickName instead of UserName*@
+                                @User.Identity.GetUserName()
+                            </a>
+                            <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                                @Html.ActionLink("View history", "Index", "Home", routeValues: null, htmlAttributes: new { @class = "dropdown-item" })  @* To disable the button: class = disabled *@
+                                @if (User.IsInRole("Admin") || User.IsInRole("Moderator")) {
+                                    @Html.ActionLink("Accounts", "Index", "ApplicationUsers", routeValues: null, htmlAttributes: new { @class = "dropdown-item" })
+                                }
+                                <div class="dropdown-divider"></div>
+                                @Html.ActionLink("Your Profile", "ProfilePage", "ApplicationUsers", routeValues: new { id = User.Identity.GetUserId() }, htmlAttributes: new { @class = "dropdown-item" })
+                                <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+                            </div>
+                        }
+                    } else {
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Account
+                        </a>
+                        <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                            @Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "dropdown-item" }) @* To disable the button: class = disabled *@
+                            @Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "dropdown-item" })
+                        </div>
+                    }
+                </li>
+                <li class="nav-item">
+                    @Html.ActionLink("About", "About", "Home", routeValues: null, htmlAttributes: new { @class = "nav-link" })
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+
+
+    @*@Scripts.Render("~/bundles/popper")*@
+    @* WHy isnt this wokring  *@
+
+    @* And I have to do this......... *@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

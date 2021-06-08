@@ -1,0 +1,128 @@
+﻿@model IEnumerable<Tider.Models.Category>
+
+@{
+    ViewBag.Title = "Categories";
+}
+
+
+@if (ViewBag.isAdmin) {
+    <div class="add-category">
+        <img id="profile-image" src="@ViewBag.userImage" />
+
+        <div class="add-category-main">
+            <form class="mt-2" method="post" action="/Categories/Create">
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <input class="transparent-form" name="Title" placeholder="Title" />
+                </div>
+
+                <div class="form-group">
+                    <input style="width: 97%;" class="transparent-form" name="Description" placeholder="Description" />
+                </div>
+
+                <div class="form-group">
+                    <input class="transparent-form" name="Image_url" placeholder="Image URL" />
+                </div>
+
+                <button style="" class="btn btn-success" type="submit">Add category</button>
+            </form>
+        </div>
+    </div>
+}
+
+@foreach (var item in Model) {
+    @Html.Partial("Partials/_Category", item)
+}
+
+<div class="modal fade" id="confirmCategoryDeletion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title text-white">Are you sure you want to delete this category?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-white">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body text-white">
+                Warning! All associated posts will be removed.
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                <form method="post" action="replace">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">Confirm</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="editCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title text-white">Edit category...</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-white">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="add-category-main text-white">
+                    <form method="post" action="this_should_be_replaced">
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <input id="category-title-input" class="transparent-form" name="Title" placeholder="Title"/>
+                        </div>
+
+                        <div class="form-group">
+                            <input id="category-description-input" style="width: 97%;" class="transparent-form" name="Description" placeholder="Description" />
+                        </div>
+
+                        <div class="form-group">
+                            <input id="category-image-input" class="transparent-form" name="Image_url" placeholder="Image URL" />
+                        </div>
+
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button style="" class="btn btn-success" type="submit">Edit category</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        // Deal with opening the deletion modal of each category
+        $('#confirmCategoryDeletion').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)             // Button that triggered the modal
+            var categoryId = button.data('category-id')     // Extract info from data-* attributes
+
+            
+            $('#confirmCategoryDeletion form').get(0).setAttribute('action', '/Categories/Delete/' + categoryId);
+        })
+
+        // Deal with opening the edit modal of each category
+        $('#editCategory').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)             // Button that triggered the modal
+            var categoryId = button.data('category-id')     // Extract info from data-* attributes
+            var title = button.data('title')
+            var description = button.data('description')
+            var imageUrl = button.data('image')
+
+
+            $('.modal-title').html('Edit category with id ' + categoryId)
+            $('#editCategory form').get(0).setAttribute('action', '/Categories/Edit/' + categoryId);
+
+            $('#category-title-input').get(0).setAttribute('value', title)
+            $('#category-description-input').get(0).setAttribute('value', description)
+            $('#category-image-input').get(0).setAttribute('value', imageUrl)
+        })
+    </script>
+}
